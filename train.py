@@ -48,14 +48,14 @@ def train():
         # inner loop
         while (j < 100):
             j += 1
-            print(j)
+            # print(j)
             k = 0
             while (k < len(data0)):
                 # rand_num = random.randint(0, len(data0) - 1)
                 x = data0[0][k]
                 y = data0[1][k]
                 tmp_g1 = max(0, g1(a, b, r, ksi1, x, y))
-                tmp_g2 = max(0, g2(a, b, r, ksi1, x, y))
+                tmp_g2 = max(0, g2(a, b, r, ksi2, x, y))
                 tmp_ksi1 = max(0, -ksi1)
                 tmp_ksi2 = max(0, -ksi2)
 
@@ -117,9 +117,9 @@ def train():
                 tmp_g1 = g1(a, b, r, ksi1, x, y)
                 tmp_g1 = tmp_g1 if tmp_g1 < 0 else 0
                 u1 += p * tmp_g1 * tmp_g1
-                tmp_g2 = g1(a, b, r, ksi2, x, y)
+                tmp_g2 = g2(a, b, r, ksi2, x, y)
                 tmp_g2 = tmp_g2 if tmp_g2 < 0 else 0
-                u1 += p * tmp_g2 * tmp_g2
+                u2 += p * tmp_g2 * tmp_g2
 
                 k += 1
 
@@ -127,7 +127,7 @@ def train():
         circle1 = plt.Circle((a, b), r + ksi1, color='r', fill=False)
         circle2 = plt.Circle((a, b), r - ksi2, color='b', fill=False)
         ax.axis('equal')
-        ax.axis([-5, 5, -5, 5])
+        ax.axis([-2, 2, -2, 2])
         ax.add_artist(circle1)
         ax.add_artist(circle2)
         ax.plot(data0[0], data0[1], 'o')
