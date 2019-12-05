@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import math
 import random
 
-data0 = pd.read_csv("data/data2.txt", header=None, sep=" ")
+data0 = pd.read_csv("data/data1.txt", header=None, sep=" ")
 data0[:5]
 
 
@@ -20,7 +20,7 @@ def train():
     # parameters
     ksi1 = 0.4
     ksi2 = 0.4
-    r = 1
+    r = 5
     a = 0
     b = 0
 
@@ -54,8 +54,8 @@ def train():
                 # rand_num = random.randint(0, len(data0) - 1)
                 x = data0[0][k]
                 y = data0[1][k]
-                tmp_g1 = max(0, g1(a, b, r, ksi1, x, y))
-                tmp_g2 = max(0, g2(a, b, r, ksi2, x, y))
+                tmp_g1 = g1(a, b, r, ksi1, x, y)
+                tmp_g2 = g2(a, b, r, ksi2, x, y)
                 tmp_ksi1 = max(0, -ksi1)
                 tmp_ksi2 = max(0, -ksi2)
 
@@ -69,22 +69,24 @@ def train():
                 tmp_g1_b = -2 * y + 2 * b
                 tmp_g2_b = 2 * y - 2 * b
                 if tmp_g1 <= 0:
+                    tmp_g1 = 0
                     tmp_g1_ksi1 = 0
                     tmp_g1_r = 0
                     tmp_g1_a = 0
                     tmp_g1_b = 0
 
                 if tmp_g2 <= 0:
+                    tmp_g2 = 0
                     tmp_g2_ksi2 = 0
                     tmp_g2_r = 0
                     tmp_g2_a = 0
                     tmp_g2_b = 0
 
-                grad_ksi1 = 1 + p * tmp_g1 * tmp_g1 * 2 * tmp_g1 * tmp_g1_ksi1 \
+                grad_ksi1 = 0.1 + p * tmp_g1 * tmp_g1 * 2 * tmp_g1 * tmp_g1_ksi1 \
                     + 2 * u1 * tmp_g1 * tmp_g1_ksi1 
                     # + 2 * p * (max(0, -ksi1) ** 3) * -1
 
-                grad_ksi2 = 1 + p * tmp_g2 * tmp_g2 * 2 * tmp_g2*tmp_g2_ksi2 \
+                grad_ksi2 = 0.1 + p * tmp_g2 * tmp_g2 * 2 * tmp_g2*tmp_g2_ksi2 \
                     + 2 * u2 * tmp_g2 * tmp_g2_ksi2 
                     # + 2 * p * (max(0, -ksi2) ** 3) * -1
 
@@ -114,18 +116,34 @@ def train():
                 b -= step * grad_b
 
                 # update u1 u2
-                tmp_g1 = g1(a, b, r, ksi1, x, y)
-                tmp_g1 = tmp_g1 if tmp_g1 < 0 else 0
-                u1 += p * tmp_g1 * tmp_g1
-                tmp_g2 = g2(a, b, r, ksi2, x, y)
-                tmp_g2 = tmp_g2 if tmp_g2 < 0 else 0
-                u2 += p * tmp_g2 * tmp_g2
+                # tmp_g1 = g1(a, b, r, ksi1, x, y)
+                # tmp_g1 = tmp_g1 if tmp_g1 < 0 else 0
+                # u1 += p * tmp_g1 * tmp_g1
+                # tmp_g2 = g2(a, b, r, ksi2, x, y)
+                # tmp_g2 = tmp_g2 if tmp_g2 < 0 else 0
+                # u2 += p * tmp_g2 * tmp_g2
 
                 k += 1
 
+            k = 0
+            while (k < len(data0)):
+                # rand_num = random.randint(0, len(data0) - 1)
+                x = data0[0][k]
+                y = data0[1][k]
+                tmp_g1 = max(0, g1(a, b, r, ksi1, x, y))
+                tmp_g2 = max(0, g2(a, b, r, ksi2, x, y))
+                # update u1 u2
+                
+                # tmp_g1 = tmp_g1 if tmp_g1 < 0 else 0
+                u1 += p * tmp_g1 * tmp_g1
+                
+                # tmp_g2 = tmp_g2 if tmp_g2 < 0 else 0
+                u2 += p * tmp_g2 * tmp_g2
+                k += 1
+
         fig, ax = plt.subplots()
-        circle1 = plt.Circle((a, b), r + ksi1, color='r', fill=False)
-        circle2 = plt.Circle((a, b), r - ksi2, color='b', fill=False)
+        circle1 = plt.Circle((a, b), math.sqrt(r + ksi1), color='r', fill=False)
+        circle2 = plt.Circle((a, b), math.sqrt(r - ksi2), color='b', fill=False)
         ax.axis('equal')
         ax.axis([-2, 2, -2, 2])
         ax.add_artist(circle1)
