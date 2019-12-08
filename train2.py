@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import math
 import random
 
-data0 = pd.read_csv("data/data2.txt", header=None, sep=" ")
+data0 = pd.read_csv("data/data4.txt", header=None, sep=" ")
 data0[:5]
 
 
